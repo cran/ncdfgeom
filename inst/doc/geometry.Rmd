@@ -1,0 +1,83 @@
+---
+title: "Reading and Writing NetCDF-CF Geometry"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Reading and Writing Geometry}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width=6, 
+  fig.height=4
+)
+options(scipen = 9999)
+```
+
+## Introduction
+
+This example shows how to 
+
+1. add polygon data to a NetCDF-CF Discrete Sampling Geometry timeSeries featureType file, 
+1. read the polygon data from the NetCDF file, 
+1. and write it to a standard GIS format.  
+
+Below the example, all the geometry types that `ncdfgeom` handles are shown in detail. 
+
+## Load Spatial Data
+
+Tables of point, line, or polygon features with associated timeseries are the target for this functionality. Here, we use some sample data from the `ncdfgeom` package.
+```{r libs}
+example_file <- tempfile()
+
+file.copy(from = system.file('extdata/example_huc_eta.nc', package = 'ncdfgeom'), 
+					to = example_file, 
+					overwrite = TRUE) -> quiet
+
+polygons <- sf::read_sf(system.file('extdata/example_huc_eta.json', package = 'ncdfgeom'))
+
+polygons <- dplyr::select(polygons, LOADDATE, AREASQKM, HUC12, NAME)
+
+plot(sf::st_geometry(polygons))
+```
+
+Now we have the polygons as shown above and a NetCDF file with a header that looks like:
+```{r dump_polygons, echo=FALSE, cache=TRUE, eval = FALSE}
+try({ncdump <- system(paste("ncdump -h", example_file), intern = TRUE)
+     cat(ncdump ,sep = "\n")}, silent = TRUE)
+```
+Now we can use the `write_geometry` function to add the polygon data to the NetCDF file.
+```{r demo}
+(vars <- ncmeta::nc_vars(example_file))
+
+ncdfgeom::write_geometry(nc_file=example_file,
+                         geom_data = polygons, 
+                         instance_dim_name = "station", 
+                         variables = vars$name) -> example_file
+```
+
+Now the NetCDF file looks like:
+```{r dump_polygons_ts, echo=FALSE}
+try({ncdump <- system(paste("ncdump -h", example_file), intern = TRUE)
+cat(ncdump ,sep = "\n")}, silent = TRUE)
+```
+
+Read the polygon data from the file and write it out to a geopackage.
+
+```{r read, warning=F}
+polygons_sf <- ncdfgeom::read_geometry(example_file)
+
+plot(sf::st_geometry(polygons_sf))
+sf::write_sf(polygons_sf, "polygons.gpkg")
+```
+
+```{r cleanup, echo=F}
+temp <- file.remove(example_file, "polygons.gpkg")
+```
+
+##   Geometry Types
+
+```{r examples, child="../tests/testthat/data/geom_examples.md"}
