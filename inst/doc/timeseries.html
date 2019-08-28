@@ -7,6 +7,7 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -35,7 +36,7 @@ a.sourceLine { text-indent: -1em; padding-left: 1em; }
 pre.numberSource a.sourceLine
   { position: relative; left: -4em; }
 pre.numberSource a.sourceLine::before
-  { content: attr(title);
+  { content: attr(data-line-number);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
     border: none; pointer-events: all; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
@@ -94,7 +95,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -304,53 +305,55 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 
 <p>First, we’ll load up some time series data.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1">attribute_file&lt;-<span class="kw">system.file</span>(<span class="st">&#39;extdata/yahara_alb_attributes.csv&#39;</span>, <span class="dt">package =</span> <span class="st">&quot;ncdfgeom&quot;</span>)</a>
-<a class="sourceLine" id="cb1-2" title="2"></a>
-<a class="sourceLine" id="cb1-3" title="3">attributes &lt;-<span class="st"> </span><span class="kw">read.csv</span>(attribute_file, <span class="dt">colClasses=</span><span class="st">&#39;character&#39;</span>)</a>
-<a class="sourceLine" id="cb1-4" title="4">lats &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(attributes<span class="op">$</span>YCOORD)</a>
-<a class="sourceLine" id="cb1-5" title="5">lons &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(attributes<span class="op">$</span>XCOORD)</a>
-<a class="sourceLine" id="cb1-6" title="6">alts &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,<span class="kw">length</span>(lats)) <span class="co"># Making up altitude for the sake of demonstration.</span></a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">attribute_file&lt;-<span class="kw">system.file</span>(<span class="st">'extdata/yahara_alb_attributes.csv'</span>, <span class="dt">package =</span> <span class="st">&quot;ncdfgeom&quot;</span>)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">attributes &lt;-<span class="st"> </span><span class="kw">read.csv</span>(attribute_file, <span class="dt">colClasses=</span><span class="st">'character'</span>)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">lats &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(attributes<span class="op">$</span>YCOORD)</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">lons &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(attributes<span class="op">$</span>XCOORD)</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">alts &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,<span class="kw">length</span>(lats)) <span class="co"># Making up altitude for the sake of demonstration.</span></a></code></pre></div>
 <p>We now have vectors of latitudes, longitudes, altitudes for each of our time series.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">timeseries_file &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&#39;extdata/yahara_alb_gdp_file.csv&#39;</span>, <span class="dt">package =</span> <span class="st">&quot;ncdfgeom&quot;</span>)</a>
-<a class="sourceLine" id="cb2-2" title="2"></a>
-<a class="sourceLine" id="cb2-3" title="3">raw_data &lt;-<span class="st"> </span>geoknife<span class="op">::</span><span class="kw">parseTimeseries</span>(timeseries_file, <span class="dt">delim=</span><span class="st">&#39;,&#39;</span>, <span class="dt">with.units=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb2-4" title="4"></a>
-<a class="sourceLine" id="cb2-5" title="5">timeseries_data &lt;-<span class="st"> </span>raw_data[<span class="dv">2</span><span class="op">:</span>(<span class="kw">ncol</span>(raw_data) <span class="op">-</span><span class="st"> </span><span class="dv">3</span>)]</a>
-<a class="sourceLine" id="cb2-6" title="6"></a>
-<a class="sourceLine" id="cb2-7" title="7">time &lt;-<span class="st"> </span>raw_data<span class="op">$</span>DateTime</a>
-<a class="sourceLine" id="cb2-8" title="8"></a>
-<a class="sourceLine" id="cb2-9" title="9">long_name &lt;-<span class="st"> </span><span class="kw">paste</span>(raw_data<span class="op">$</span>variable[<span class="dv">1</span>], <span class="st">&#39;area weighted&#39;</span>, raw_data<span class="op">$</span>statistic[<span class="dv">1</span>], <span class="st">&#39;in&#39;</span>, </a>
-<a class="sourceLine" id="cb2-10" title="10">                   raw_data<span class="op">$</span>units[<span class="dv">1</span>], <span class="dt">sep=</span><span class="st">&#39; &#39;</span>)</a>
-<a class="sourceLine" id="cb2-11" title="11"></a>
-<a class="sourceLine" id="cb2-12" title="12">meta &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">name=</span>raw_data<span class="op">$</span>variable[<span class="dv">1</span>], <span class="dt">long_name=</span>long_name)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">timeseries_file &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">'extdata/yahara_alb_gdp_file.csv'</span>, <span class="dt">package =</span> <span class="st">&quot;ncdfgeom&quot;</span>)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">raw_data &lt;-<span class="st"> </span>geoknife<span class="op">::</span><span class="kw">parseTimeseries</span>(timeseries_file, <span class="dt">delim=</span><span class="st">','</span>, <span class="dt">with.units=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">timeseries_data &lt;-<span class="st"> </span>raw_data[<span class="dv">2</span><span class="op">:</span>(<span class="kw">ncol</span>(raw_data) <span class="op">-</span><span class="st"> </span><span class="dv">3</span>)]</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">time &lt;-<span class="st"> </span>raw_data<span class="op">$</span>DateTime</a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">long_name &lt;-<span class="st"> </span><span class="kw">paste</span>(raw_data<span class="op">$</span>variable[<span class="dv">1</span>], <span class="st">'area weighted'</span>, raw_data<span class="op">$</span>statistic[<span class="dv">1</span>], <span class="st">'in'</span>, </a>
+<a class="sourceLine" id="cb2-10" data-line-number="10">                   raw_data<span class="op">$</span>units[<span class="dv">1</span>], <span class="dt">sep=</span><span class="st">' '</span>)</a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12">meta &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">name=</span>raw_data<span class="op">$</span>variable[<span class="dv">1</span>], <span class="dt">long_name=</span>long_name)</a></code></pre></div>
 <p>Now we have the <code>timeseries_data</code> data.frame of timeseries data, the <code>time</code> vector of timesteps, and a bit of metadata for the timeseries variable that we will write into the NetCDF file.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">nc_summary&lt;-<span class="st">&#39;example summary&#39;</span></a>
-<a class="sourceLine" id="cb3-2" title="2">nc_date_create&lt;-<span class="st">&#39;2099-01-01&#39;</span></a>
-<a class="sourceLine" id="cb3-3" title="3">nc_creator_name=<span class="st">&#39;example creator&#39;</span></a>
-<a class="sourceLine" id="cb3-4" title="4">nc_creator_email=<span class="st">&#39;example@test.com&#39;</span></a>
-<a class="sourceLine" id="cb3-5" title="5">nc_project=<span class="st">&#39;example ncdfgeom&#39;</span></a>
-<a class="sourceLine" id="cb3-6" title="6">nc_proc_level=<span class="st">&#39;just an example no processing&#39;</span></a>
-<a class="sourceLine" id="cb3-7" title="7">nc_title&lt;-<span class="st">&#39;example title&#39;</span></a>
-<a class="sourceLine" id="cb3-8" title="8"></a>
-<a class="sourceLine" id="cb3-9" title="9">global_attributes&lt;-<span class="kw">list</span>(<span class="dt">title =</span> nc_title, </a>
-<a class="sourceLine" id="cb3-10" title="10">                        <span class="dt">summary =</span> nc_summary, </a>
-<a class="sourceLine" id="cb3-11" title="11">                        <span class="dt">date_created =</span> nc_date_create, </a>
-<a class="sourceLine" id="cb3-12" title="12">                        <span class="dt">creator_name =</span> nc_creator_name,</a>
-<a class="sourceLine" id="cb3-13" title="13">                        <span class="dt">creator_email =</span> nc_creator_email, </a>
-<a class="sourceLine" id="cb3-14" title="14">                        <span class="dt">project =</span> nc_project,</a>
-<a class="sourceLine" id="cb3-15" title="15">                        <span class="dt">processing_level =</span> nc_proc_level)</a>
-<a class="sourceLine" id="cb3-16" title="16"></a>
-<a class="sourceLine" id="cb3-17" title="17">ncdfgeom<span class="op">::</span><span class="kw">write_timeseries_dsg</span>(<span class="dt">nc_file =</span> <span class="st">&quot;demo_nc.nc&quot;</span>, </a>
-<a class="sourceLine" id="cb3-18" title="18">                               <span class="dt">instance_names =</span> <span class="kw">names</span>(timeseries_data),</a>
-<a class="sourceLine" id="cb3-19" title="19">                               <span class="dt">lats =</span> lats, </a>
-<a class="sourceLine" id="cb3-20" title="20">                               <span class="dt">lons =</span> lons, </a>
-<a class="sourceLine" id="cb3-21" title="21">                               <span class="dt">alts =</span> alts,</a>
-<a class="sourceLine" id="cb3-22" title="22">                               <span class="dt">times =</span> time, </a>
-<a class="sourceLine" id="cb3-23" title="23">                               <span class="dt">data =</span> timeseries_data,</a>
-<a class="sourceLine" id="cb3-24" title="24">                               <span class="dt">data_unit =</span> raw_data<span class="op">$</span>units[<span class="dv">1</span>],</a>
-<a class="sourceLine" id="cb3-25" title="25">                               <span class="dt">data_prec =</span> <span class="st">&#39;double&#39;</span>,</a>
-<a class="sourceLine" id="cb3-26" title="26">                               <span class="dt">data_metadata =</span> meta,</a>
-<a class="sourceLine" id="cb3-27" title="27">                               <span class="dt">attributes =</span> global_attributes) -&gt;<span class="st"> </span>nc_file</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">nc_summary&lt;-<span class="st">'example summary'</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">nc_date_create&lt;-<span class="st">'2099-01-01'</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">nc_creator_name=<span class="st">'example creator'</span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">nc_creator_email=<span class="st">'example@test.com'</span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">nc_project=<span class="st">'example ncdfgeom'</span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">nc_proc_level=<span class="st">'just an example no processing'</span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">nc_title&lt;-<span class="st">'example title'</span></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9">global_attributes&lt;-<span class="kw">list</span>(<span class="dt">title =</span> nc_title, </a>
+<a class="sourceLine" id="cb3-10" data-line-number="10">                        <span class="dt">summary =</span> nc_summary, </a>
+<a class="sourceLine" id="cb3-11" data-line-number="11">                        <span class="dt">date_created =</span> nc_date_create, </a>
+<a class="sourceLine" id="cb3-12" data-line-number="12">                        <span class="dt">creator_name =</span> nc_creator_name,</a>
+<a class="sourceLine" id="cb3-13" data-line-number="13">                        <span class="dt">creator_email =</span> nc_creator_email, </a>
+<a class="sourceLine" id="cb3-14" data-line-number="14">                        <span class="dt">project =</span> nc_project,</a>
+<a class="sourceLine" id="cb3-15" data-line-number="15">                        <span class="dt">processing_level =</span> nc_proc_level)</a>
+<a class="sourceLine" id="cb3-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb3-17" data-line-number="17">ncdfgeom<span class="op">::</span><span class="kw">write_timeseries_dsg</span>(<span class="dt">nc_file =</span> <span class="st">&quot;demo_nc.nc&quot;</span>, </a>
+<a class="sourceLine" id="cb3-18" data-line-number="18">                               <span class="dt">instance_names =</span> <span class="kw">names</span>(timeseries_data),</a>
+<a class="sourceLine" id="cb3-19" data-line-number="19">                               <span class="dt">lats =</span> lats, </a>
+<a class="sourceLine" id="cb3-20" data-line-number="20">                               <span class="dt">lons =</span> lons, </a>
+<a class="sourceLine" id="cb3-21" data-line-number="21">                               <span class="dt">alts =</span> alts,</a>
+<a class="sourceLine" id="cb3-22" data-line-number="22">                               <span class="dt">times =</span> time, </a>
+<a class="sourceLine" id="cb3-23" data-line-number="23">                               <span class="dt">data =</span> timeseries_data,</a>
+<a class="sourceLine" id="cb3-24" data-line-number="24">                               <span class="dt">data_unit =</span> raw_data<span class="op">$</span>units[<span class="dv">1</span>],</a>
+<a class="sourceLine" id="cb3-25" data-line-number="25">                               <span class="dt">data_prec =</span> <span class="st">'double'</span>,</a>
+<a class="sourceLine" id="cb3-26" data-line-number="26">                               <span class="dt">data_metadata =</span> meta,</a>
+<a class="sourceLine" id="cb3-27" data-line-number="27">                               <span class="dt">attributes =</span> global_attributes) -&gt;<span class="st"> </span>nc_file</a>
+<a class="sourceLine" id="cb3-28" data-line-number="28"><span class="co">#&gt; Warning in create.nc(nc_file, large = TRUE): Argument 'large' is</span></a>
+<a class="sourceLine" id="cb3-29" data-line-number="29"><span class="co">#&gt; deprecated; please specify 'format' instead</span></a></code></pre></div>
 <p>Now we have a NetCDF file with reference spatial information for each time series, and a single timeseries variable.</p>
 <p>The file has three dimensions.</p>
 <ol style="list-style-type: decimal">
@@ -358,32 +361,32 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <li>one called “time” that is the length of the number of time series, and</li>
 <li>one called “name_strlen” that is the length of the longest timeseries ID (which is stored as a string).</li>
 </ol>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">ncmeta<span class="op">::</span><span class="kw">nc_dims</span>(nc_file)</a>
-<a class="sourceLine" id="cb4-2" title="2"><span class="co">#&gt; # A tibble: 3 x 4</span></a>
-<a class="sourceLine" id="cb4-3" title="3"><span class="co">#&gt;      id name               length unlim</span></a>
-<a class="sourceLine" id="cb4-4" title="4"><span class="co">#&gt;   &lt;dbl&gt; &lt;chr&gt;               &lt;dbl&gt; &lt;lgl&gt;</span></a>
-<a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt; 1     0 instance               71 FALSE</span></a>
-<a class="sourceLine" id="cb4-6" title="6"><span class="co">#&gt; 2     1 time                  730 FALSE</span></a>
-<a class="sourceLine" id="cb4-7" title="7"><span class="co">#&gt; 3     2 instance_name_char      2 FALSE</span></a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">ncmeta<span class="op">::</span><span class="kw">nc_dims</span>(nc_file)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="co">#&gt; # A tibble: 3 x 4</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt;      id name               length unlim</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;               &lt;dbl&gt; &lt;lgl&gt;</span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt; 1     0 instance               71 FALSE</span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="co">#&gt; 2     1 time                  730 FALSE</span></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="co">#&gt; 3     2 instance_name_char      2 FALSE</span></a></code></pre></div>
 <p>The file has variables for latitude, longitude, altitude, timeseries IDs, and a data variable.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">ncmeta<span class="op">::</span><span class="kw">nc_vars</span>(nc_file)</a>
-<a class="sourceLine" id="cb5-2" title="2"><span class="co">#&gt; # A tibble: 6 x 5</span></a>
-<a class="sourceLine" id="cb5-3" title="3"><span class="co">#&gt;      id name                                        type      ndims natts</span></a>
-<a class="sourceLine" id="cb5-4" title="4"><span class="co">#&gt;   &lt;dbl&gt; &lt;chr&gt;                                       &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb5-5" title="5"><span class="co">#&gt; 1     0 instance_name                               NC_CHAR       2     2</span></a>
-<a class="sourceLine" id="cb5-6" title="6"><span class="co">#&gt; 2     1 time                                        NC_DOUBLE     1     4</span></a>
-<a class="sourceLine" id="cb5-7" title="7"><span class="co">#&gt; 3     2 lat                                         NC_DOUBLE     1     4</span></a>
-<a class="sourceLine" id="cb5-8" title="8"><span class="co">#&gt; 4     3 lon                                         NC_DOUBLE     1     4</span></a>
-<a class="sourceLine" id="cb5-9" title="9"><span class="co">#&gt; 5     4 alt                                         NC_DOUBLE     1     4</span></a>
-<a class="sourceLine" id="cb5-10" title="10"><span class="co">#&gt; 6     5 BCCA_0-125deg_pr_day_ACCESS1-0_rcp45_r1i1p1 NC_DOUBLE     2     4</span></a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">ncmeta<span class="op">::</span><span class="kw">nc_vars</span>(nc_file)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt; # A tibble: 6 x 5</span></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt;      id name                                        type      ndims natts</span></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;                                       &lt;chr&gt;     &lt;int&gt; &lt;int&gt;</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt; 1     0 instance_name                               NC_CHAR       2     2</span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt; 2     1 time                                        NC_DOUBLE     1     4</span></a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co">#&gt; 3     2 lat                                         NC_DOUBLE     1     4</span></a>
+<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#&gt; 4     3 lon                                         NC_DOUBLE     1     4</span></a>
+<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co">#&gt; 5     4 alt                                         NC_DOUBLE     1     4</span></a>
+<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="co">#&gt; 6     5 BCCA_0-125deg_pr_day_ACCESS1-0_rcp45_r1i1p1 NC_DOUBLE     2     4</span></a></code></pre></div>
 <p>The primary dimensions in the file are of length, number of time steps and number of time series.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">ncmeta<span class="op">::</span><span class="kw">nc_dims</span>(nc_file)</a>
-<a class="sourceLine" id="cb6-2" title="2"><span class="co">#&gt; # A tibble: 3 x 4</span></a>
-<a class="sourceLine" id="cb6-3" title="3"><span class="co">#&gt;      id name               length unlim</span></a>
-<a class="sourceLine" id="cb6-4" title="4"><span class="co">#&gt;   &lt;dbl&gt; &lt;chr&gt;               &lt;dbl&gt; &lt;lgl&gt;</span></a>
-<a class="sourceLine" id="cb6-5" title="5"><span class="co">#&gt; 1     0 instance               71 FALSE</span></a>
-<a class="sourceLine" id="cb6-6" title="6"><span class="co">#&gt; 2     1 time                  730 FALSE</span></a>
-<a class="sourceLine" id="cb6-7" title="7"><span class="co">#&gt; 3     2 instance_name_char      2 FALSE</span></a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">ncmeta<span class="op">::</span><span class="kw">nc_dims</span>(nc_file)</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="co">#&gt; # A tibble: 3 x 4</span></a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="co">#&gt;      id name               length unlim</span></a>
+<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;               &lt;dbl&gt; &lt;lgl&gt;</span></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="co">#&gt; 1     0 instance               71 FALSE</span></a>
+<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="co">#&gt; 2     1 time                  730 FALSE</span></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="co">#&gt; 3     2 instance_name_char      2 FALSE</span></a></code></pre></div>
 <p>The header of the resulting NetCDF file looks like:</p>
 <pre><code>#&gt; netcdf demo_nc {
 #&gt; dimensions:
@@ -434,11 +437,11 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 #&gt;      :processing_level = &quot;just an example no processing&quot; ;
 #&gt; }</code></pre>
 <p>This file can be read back into R with the function <code>read_timeseries_dsg</code>. The response is a list of variables as shown below.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">timeseries_dataset &lt;-<span class="st"> </span>ncdfgeom<span class="op">::</span><span class="kw">read_timeseries_dsg</span>(nc_file)</a>
-<a class="sourceLine" id="cb8-2" title="2"><span class="kw">names</span>(timeseries_dataset)</a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt; [1] &quot;time&quot;              &quot;lats&quot;              &quot;lons&quot;             </span></a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; [4] &quot;alts&quot;              &quot;varmeta&quot;           &quot;data_unit&quot;        </span></a>
-<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; [7] &quot;data_prec&quot;         &quot;data_frames&quot;       &quot;global_attributes&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">timeseries_dataset &lt;-<span class="st"> </span>ncdfgeom<span class="op">::</span><span class="kw">read_timeseries_dsg</span>(nc_file)</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="kw">names</span>(timeseries_dataset)</a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="co">#&gt; [1] &quot;time&quot;              &quot;lats&quot;              &quot;lons&quot;             </span></a>
+<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co">#&gt; [4] &quot;alts&quot;              &quot;varmeta&quot;           &quot;data_unit&quot;        </span></a>
+<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="co">#&gt; [7] &quot;data_prec&quot;         &quot;data_frames&quot;       &quot;global_attributes&quot;</span></a></code></pre></div>
 <ol style="list-style-type: decimal">
 <li><code>time</code>, <code>lats</code>, <code>lons</code>, and <code>alts</code> are vectors that apply to the whole dataset.</li>
 <li><code>varmeta</code> has one entry per timeseries variable read from the NetCDF file and contains the <code>name</code> and <code>long_name</code> attribute of each variable.</li>
@@ -447,6 +450,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <li><code>global_attributes</code> contains standard global attributes found in the file. All of the variables that have one element per timeseries variable, are named the same as the NetCDF variable names so they can be accessed by name as shown below.</li>
 </ol>
 
+
+
+<!-- code folding -->
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
