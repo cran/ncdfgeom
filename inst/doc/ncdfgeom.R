@@ -1,4 +1,4 @@
-## ----setup_1, include = FALSE--------------------------------------------
+## ----setup_1, include = FALSE-------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -7,25 +7,25 @@ knitr::opts_chunk$set(
 )
 options(scipen = 9999)
 
-## ----libs, message=FALSE, warning=FALSE----------------------------------
+## ----libs, message=FALSE, warning=FALSE---------------------------------------
 library(sf)
-library(tidyverse)
+library(dplyr)
 library(ncdfgeom)
 
-## ----data_shape_2--------------------------------------------------------
+## ----data_shape_2-------------------------------------------------------------
 prcp_data <- readRDS(system.file("extdata/climdiv-pcpndv.rds", package = "ncdfgeom"))
 print(prcp_data, n_extra = 0)
 plot(prcp_data$date, prcp_data$`0101`, col = "red", 
      xlab = "date", ylab = "monthly precip (inches)", main = "Sample Timeseries for 0101-'Northern Valley'")
 lines(prcp_data$date, prcp_data$`0101`)
 
-## ----data_shape----------------------------------------------------------
+## ----data_shape---------------------------------------------------------------
 climdiv_poly <- read_sf(system.file("extdata/climdiv.gpkg", package = "ncdfgeom"))
 print(climdiv_poly)
 plot(st_geometry(climdiv_poly), main = "Climate Divisions with 0101-'Northern Valley' Highlighted")
 plot(st_geometry(filter(climdiv_poly, CLIMDIV == "0101")), col = "red", add = TRUE)
 
-## ----write_ts, warning = FALSE-------------------------------------------
+## ----write_ts, warning = FALSE------------------------------------------------
 climdiv_centroids <- climdiv_poly %>%
   st_transform(5070) %>% # Albers Equal Area
   st_set_agr("constant") %>%
@@ -59,18 +59,18 @@ write_geometry(nc_file = "climdiv_prcp.nc",
                geom_data = climdiv_poly,
                variables = "climdiv_prcp_inches")
 
-## ----ncdump--------------------------------------------------------------
+## ----ncdump-------------------------------------------------------------------
 try({ncdump <- system(paste("ncdump -h", nc_file), intern = TRUE)
 cat(ncdump, sep = "\n")}, silent = TRUE)
 
-## ----read----------------------------------------------------------------
+## ----read---------------------------------------------------------------------
 # First read the timeseries.
 prcp_data <- read_timeseries_dsg("climdiv_prcp.nc")
 
 # Now read the geometry.
 climdiv_poly <- read_geometry("climdiv_prcp.nc")
 
-## ----data_summary--------------------------------------------------------
+## ----data_summary-------------------------------------------------------------
 names(prcp_data)
 class(prcp_data$time)
 names(prcp_data$varmeta$climdiv_prcp_inches)
@@ -80,7 +80,7 @@ str(names(prcp_data$data_frames$climdiv_prcp_inches))
 prcp_data$global_attributes
 names(climdiv_poly)
 
-## ----p_colors_source, echo=FALSE-----------------------------------------
+## ----p_colors_source, echo=FALSE----------------------------------------------
 # Because we've gotta have pretty colors!
 p_colors <- function (n, name = c("precip_colors")) {
 # Thanks! https://quantdev.ssri.psu.edu/tutorials/generating-custom-color-palette-function-r
@@ -105,7 +105,7 @@ p_colors <- function (n, name = c("precip_colors")) {
     palette
 }
 
-## ----plot, fig.height=6, fig.width=8-------------------------------------
+## ----plot, fig.height=6, fig.width=8------------------------------------------
 climdiv_poly <- climdiv_poly %>%
   st_transform(3857) %>% # web mercator
   st_simplify(dTolerance = 5000)
@@ -131,7 +131,7 @@ plot(prcp["prcp"], lwd = 0.1, pal = p_colors,
      key.pos = 3, key.length = lcm(20))
   
 
-## ----setup_dontrun, eval = FALSE-----------------------------------------
+## ----setup_dontrun, eval = FALSE----------------------------------------------
 #  # Description here: ftp://ftp.ncdc.noaa.gov/pub/data/cirs/climdiv/divisional-readme.txt
 #  prcp_url <- "ftp://ftp.ncdc.noaa.gov/pub/data/cirs/climdiv/climdiv-pcpndv-v1.0.0-20190408"
 #  
@@ -186,7 +186,7 @@ plot(prcp["prcp"], lwd = 0.1, pal = p_colors,
 #  unlink("CONUS_CLIMATE_DIVISIONS.shp.zip")
 #  unlink("prcp.txt")
 
-## ----p_colors, eval=FALSE------------------------------------------------
+## ----p_colors, eval=FALSE-----------------------------------------------------
 #  p_colors <- function (n, name = c("precip_colors")) {
 #  # Thanks! https://quantdev.ssri.psu.edu/tutorials/generating-custom-color-palette-function-r
 #      p_rgb <- col2rgb(c("#FAFBF3", "#F0F8E3", "#D4E9CA",
@@ -210,6 +210,6 @@ plot(prcp["prcp"], lwd = 0.1, pal = p_colors,
 #      palette
 #  }
 
-## ----cleanup, echo=FALSE-------------------------------------------------
+## ----cleanup, echo=FALSE------------------------------------------------------
 unlink("climdiv_prcp.nc")
 

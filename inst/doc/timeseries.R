@@ -1,4 +1,4 @@
-## ----setup, include = FALSE----------------------------------------------
+## ----setup, include = FALSE---------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -7,7 +7,7 @@ knitr::opts_chunk$set(
 )
 options(scipen = 9999)
 
-## ----attributes----------------------------------------------------------
+## ----attributes---------------------------------------------------------------
 attribute_file<-system.file('extdata/yahara_alb_attributes.csv', package = "ncdfgeom")
 
 attributes <- read.csv(attribute_file, colClasses='character')
@@ -15,7 +15,7 @@ lats <- as.numeric(attributes$YCOORD)
 lons <- as.numeric(attributes$XCOORD)
 alts <- rep(1,length(lats)) # Making up altitude for the sake of demonstration.
 
-## ----timeseries----------------------------------------------------------
+## ----timeseries---------------------------------------------------------------
 timeseries_file <- system.file('extdata/yahara_alb_gdp_file.csv', package = "ncdfgeom")
 
 raw_data <- geoknife::parseTimeseries(timeseries_file, delim=',', with.units=TRUE)
@@ -29,7 +29,7 @@ long_name <- paste(raw_data$variable[1], 'area weighted', raw_data$statistic[1],
 
 meta <- list(name=raw_data$variable[1], long_name=long_name)
 
-## ----write---------------------------------------------------------------
+## ----write--------------------------------------------------------------------
 nc_summary<-'example summary'
 nc_date_create<-'2099-01-01'
 nc_creator_name='example creator'
@@ -59,23 +59,23 @@ ncdfgeom::write_timeseries_dsg(nc_file = "demo_nc.nc",
                                attributes = global_attributes) -> nc_file
 
 
-## ----dim-----------------------------------------------------------------
+## ----dim----------------------------------------------------------------------
 ncmeta::nc_dims(nc_file)
 
-## ----var-----------------------------------------------------------------
+## ----var----------------------------------------------------------------------
 ncmeta::nc_vars(nc_file)
 
-## ----dim2----------------------------------------------------------------
+## ----dim2---------------------------------------------------------------------
 ncmeta::nc_dims(nc_file)
 
-## ----dump_polygons, echo=FALSE-------------------------------------------
+## ----dump_polygons, echo=FALSE------------------------------------------------
 try({ncdump <- system(paste("ncdump -h", nc_file), intern = TRUE)
 cat(ncdump ,sep = "\n")}, silent = TRUE)
 
-## ----read----------------------------------------------------------------
+## ----read---------------------------------------------------------------------
 timeseries_dataset <- ncdfgeom::read_timeseries_dsg(nc_file)
 names(timeseries_dataset)
 
-## ----delete, echo=F, message=F-------------------------------------------
+## ----delete, echo=F, message=F------------------------------------------------
 t <- file.remove(nc_file)
 

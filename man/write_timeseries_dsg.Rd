@@ -4,11 +4,25 @@
 \alias{write_timeseries_dsg}
 \title{Write time series to NetCDF-CF}
 \usage{
-write_timeseries_dsg(nc_file, instance_names, lats, lons, times, data,
-  alts = NA, data_unit = "", data_prec = "double",
+write_timeseries_dsg(
+  nc_file,
+  instance_names,
+  lats,
+  lons,
+  times,
+  data,
+  alts = NA,
+  data_unit = "",
+  data_prec = "double",
   data_metadata = list(name = "data", long_name = "unnamed data"),
-  time_units = "days since 1970-01-01 00:00:00", attributes = list(),
-  add_to_existing = FALSE, overwrite = FALSE)
+  time_units = "days since 1970-01-01 00:00:00",
+  coordvar_long_names = list(instance = "Station Names", time = "time of measurement",
+    lat = "latitude of the measurement", lon = "longitude of the measurement", alt =
+    "altitude of the measurement"),
+  attributes = list(),
+  add_to_existing = FALSE,
+  overwrite = FALSE
+)
 }
 \arguments{
 \item{nc_file}{\code{character} file path to the nc file to be created.}
@@ -37,6 +51,8 @@ Valid options: 'short' 'integer' 'float' 'double' 'char'.}
 \item{data_metadata}{\code{list} A named list of strings: list(name='ShortVarName', long_name='A Long Name')}
 
 \item{time_units}{\code{character} units string in udunits format to use for time. Defaults to 'days since 1970-01-01 00:00:00'}
+
+\item{coordvar_long_names}{\code{list} values for long names on coordinate variables. Names should be `instance`, time`, `lat`, `lon`, and `alt.`}
 
 \item{attributes}{list An optional list of attributes that will be added at the global level. 
 See details for useful attributes.}
@@ -72,7 +88,7 @@ See the timeseries vignette for more information.
 }
 \references{
 \enumerate{
-  \item \url{http://www.unidata.ucar.edu/software/thredds/current/netcdf-java/reference/FeatureDatasets/CFpointImplement.html}
+  \item \url{https://www.unidata.ucar.edu/software/netcdf-java/v4.6/reference/FeatureDatasets/CFpointImplement.html}
   \item \url{http://cfconventions.org/cf-conventions/cf-conventions.html#_orthogonal_multidimensional_array_representation}
   \item \url{http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/build/cf-conventions.html#time-series-data}
 }

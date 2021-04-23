@@ -2,7 +2,7 @@
 title: "NetCDF-CF Geometry and Timeseries Tools for R"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getting Started}
+  %\VignetteIndexEntry{NetCDF-CF Geometry and Timeseries Tools for R}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -48,11 +48,11 @@ When on CRAN, the package will be installed with the typical install.packages me
 install.packages("ncdfgeom")
 ```
 
-For this demo, we'll use `sf`, `tidyverse`, and `ncdfgeom`.
+For this demo, we'll use `sf`, `dplyr`, and `ncdfgeom`.
 
 ```{r libs, message=FALSE, warning=FALSE}
 library(sf)
-library(tidyverse)
+library(dplyr)
 library(ncdfgeom)
 ```
 
