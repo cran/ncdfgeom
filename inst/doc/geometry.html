@@ -14,7 +14,19 @@
 
 <title>Reading and Writing NetCDF-CF Geometry</title>
 
-<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -24,6 +36,7 @@
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
   ul.task-list{list-style: none;}
     </style>
+
 
 
 <style type="text/css">
@@ -125,7 +138,187 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -145,15 +338,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2>Introduction</h2>
 <p>This example shows how to</p>
 <ol style="list-style-type: decimal">
-<li>add polygon data to a NetCDF-CF Discrete Sampling Geometry timeSeries featureType file,</li>
+<li>add polygon data to a NetCDF-CF Discrete Sampling Geometry
+timeSeries featureType file,</li>
 <li>read the polygon data from the NetCDF file,</li>
 <li>and write it to a standard GIS format.</li>
 </ol>
-<p>Below the example, all the geometry types that <code>ncdfgeom</code> handles are shown in detail.</p>
+<p>Below the example, all the geometry types that <code>ncdfgeom</code>
+handles are shown in detail.</p>
 </div>
 <div id="load-spatial-data" class="section level2">
 <h2>Load Spatial Data</h2>
-<p>Tables of point, line, or polygon features with associated timeseries are the target for this functionality. Here, we use some sample data from the <code>ncdfgeom</code> package.</p>
+<p>Tables of point, line, or polygon features with associated timeseries
+are the target for this functionality. Here, we use some sample data
+from the <code>ncdfgeom</code> package.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>example_file <span class="ot">&lt;-</span> <span class="fu">tempfile</span>()</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">file.copy</span>(<span class="at">from =</span> <span class="fu">system.file</span>(<span class="st">&#39;extdata/example_huc_eta.nc&#39;</span>, <span class="at">package =</span> <span class="st">&#39;ncdfgeom&#39;</span>), </span>
@@ -166,10 +363,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sf<span class="sc">::</span><span class="fu">st_geometry</span>(polygons))</span></code></pre></div>
 <p><img src="data:image/png;base64,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" /><!-- --></p>
-<p>Now we have the polygons as shown above and a NetCDF file with a header that looks like:</p>
-<p>Now we can use the <code>write_geometry</code> function to add the polygon data to the NetCDF file.</p>
+<p>Now we have the polygons as shown above and a NetCDF file with a
+header that looks like:</p>
+<p>Now we can use the <code>write_geometry</code> function to add the
+polygon data to the NetCDF file.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(vars <span class="ot">&lt;-</span> ncmeta<span class="sc">::</span><span class="fu">nc_vars</span>(example_file))</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 x 5</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 5</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      id name         type      ndims natts</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;        &lt;chr&gt;     &lt;int&gt; &lt;int&gt;</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     0 lat          NC_DOUBLE     1     4</span></span>
@@ -183,92 +382,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                         <span class="at">instance_dim_name =</span> <span class="st">&quot;station&quot;</span>, </span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                         <span class="at">variables =</span> vars<span class="sc">$</span>name) <span class="ot">-&gt;</span> example_file</span></code></pre></div>
 <p>Now the NetCDF file looks like:</p>
-<pre><code>#&gt; netcdf fileecac747b4d6e {
-#&gt; dimensions:
-#&gt;  maxStrlen64 = 64 ;
-#&gt;  station = 2 ;
-#&gt;  time = 25 ;
-#&gt;  char = 12 ;
-#&gt;  node = 2628 ;
-#&gt; variables:
-#&gt;  double lat(station) ;
-#&gt;      lat:units = &quot;degrees_north&quot; ;
-#&gt;      lat:missing_value = -999. ;
-#&gt;      lat:long_name = &quot;latitude of the observation&quot; ;
-#&gt;      lat:standard_name = &quot;latitude&quot; ;
-#&gt;      lat:grid_mapping = &quot;grid_mapping&quot; ;
-#&gt;      lat:geometry = &quot;geometry_container&quot; ;
-#&gt;  double lon(station) ;
-#&gt;      lon:units = &quot;degrees_east&quot; ;
-#&gt;      lon:missing_value = -999. ;
-#&gt;      lon:long_name = &quot;longitude of the observation&quot; ;
-#&gt;      lon:standard_name = &quot;longitude&quot; ;
-#&gt;      lon:grid_mapping = &quot;grid_mapping&quot; ;
-#&gt;      lon:geometry = &quot;geometry_container&quot; ;
-#&gt;  double time(time) ;
-#&gt;      time:units = &quot;days since 1970-01-01 00:00:00&quot; ;
-#&gt;      time:missing_value = -999. ;
-#&gt;      time:long_name = &quot;time of measurement&quot; ;
-#&gt;      time:standard_name = &quot;time&quot; ;
-#&gt;      time:grid_mapping = &quot;grid_mapping&quot; ;
-#&gt;      time:geometry = &quot;geometry_container&quot; ;
-#&gt;  char station_name(station, maxStrlen64) ;
-#&gt;      station_name:units = &quot;&quot; ;
-#&gt;      station_name:missing_value = &quot;&quot; ;
-#&gt;      station_name:long_name = &quot;Station Names&quot; ;
-#&gt;      station_name:cf_role = &quot;timeseries_id&quot; ;
-#&gt;      station_name:standard_name = &quot;station_id&quot; ;
-#&gt;      station_name:grid_mapping = &quot;grid_mapping&quot; ;
-#&gt;      station_name:geometry = &quot;geometry_container&quot; ;
-#&gt;  int et(station, time) ;
-#&gt;      et:units = &quot;mm&quot; ;
-#&gt;      et:missing_value = -999 ;
-#&gt;      et:long_name = &quot;Area Weighted Mean Actual Evapotranspiration&quot; ;
-#&gt;      et:coordinates = &quot;time lat lon&quot; ;
-#&gt;      et:grid_mapping = &quot;grid_mapping&quot; ;
-#&gt;      et:geometry = &quot;geometry_container&quot; ;
-#&gt;  char LOADDATE(station, char) ;
-#&gt;      LOADDATE:units = &quot;unknown&quot; ;
-#&gt;      LOADDATE:grid_mapping = &quot;grid_mapping&quot; ;
-#&gt;      LOADDATE:geometry = &quot;geometry_container&quot; ;
-#&gt;  double AREASQKM(station) ;
-#&gt;      AREASQKM:units = &quot;unknown&quot; ;
-#&gt;      AREASQKM:missing_value = -9999.999 ;
-#&gt;      AREASQKM:grid_mapping = &quot;grid_mapping&quot; ;
-#&gt;      AREASQKM:geometry = &quot;geometry_container&quot; ;
-#&gt;  char HUC12(station, char) ;
-#&gt;      HUC12:units = &quot;unknown&quot; ;
-#&gt;      HUC12:grid_mapping = &quot;grid_mapping&quot; ;
-#&gt;      HUC12:geometry = &quot;geometry_container&quot; ;
-#&gt;  char NAME(station, char) ;
-#&gt;      NAME:units = &quot;unknown&quot; ;
-#&gt;      NAME:grid_mapping = &quot;grid_mapping&quot; ;
-#&gt;      NAME:geometry = &quot;geometry_container&quot; ;
-#&gt;  double x_nodes(node) ;
-#&gt;      x_nodes:units = &quot;degrees_east&quot; ;
-#&gt;      x_nodes:axis = &quot;X&quot; ;
-#&gt;  double y_nodes(node) ;
-#&gt;      y_nodes:units = &quot;degrees_north&quot; ;
-#&gt;      y_nodes:axis = &quot;Y&quot; ;
-#&gt;  int geometry_container ;
-#&gt;      geometry_container:node_coordinates = &quot;x_nodes y_nodes&quot; ;
-#&gt;      geometry_container:geometry_type = &quot;polygon&quot; ;
-#&gt;      geometry_container:node_count = &quot;node_count&quot; ;
-#&gt;      geometry_container:grid_mapping = &quot;grid_mapping&quot; ;
-#&gt;  int node_count(station) ;
-#&gt;      node_count:long_name = &quot;count of coordinates in each instance geometry&quot; ;
-#&gt;  int grid_mapping ;
-#&gt;      grid_mapping:grid_mapping_name = &quot;latitude_longitude&quot; ;
-#&gt;      grid_mapping:semi_major_axis = 6378137. ;
-#&gt;      grid_mapping:inverse_flattening = 298.257223563 ;
-#&gt;      grid_mapping:longitude_of_prime_meridian = 0. ;
-#&gt; 
-#&gt; // global attributes:
-#&gt;      :Conventions = &quot;CF-1.8&quot; ;
-#&gt;      :featureType = &quot;timeSeries&quot; ;
-#&gt;      :cdm_data_type = &quot;Station&quot; ;
-#&gt; }</code></pre>
-<p>Read the polygon data from the file and write it out to a geopackage.</p>
+<pre><code>#&gt; Warning in system(paste(&quot;ncdump -h&quot;, example_file),
+#&gt; intern = TRUE): running command &#39;ncdump -h C:
+#&gt; \Users\DBLODG~2\AppData\Local\Temp\1\Rtmpwzs1ZB\file49d4604c1331&#39; had status 1</code></pre>
+<p>Read the polygon data from the file and write it out to a
+geopackage.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>polygons_sf <span class="ot">&lt;-</span> ncdfgeom<span class="sc">::</span><span class="fu">read_geometry</span>(example_file)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sf<span class="sc">::</span><span class="fu">st_geometry</span>(polygons_sf))</span></code></pre></div>
@@ -320,7 +438,8 @@ data:
 </div>
 <div id="linestring-2d" class="section level2">
 <h2>LineString (2D)</h2>
-<p>Well Known Text (WKT): <code>LINESTRING (30 10, 10 30, 40 40)</code><br />
+<p>Well Known Text (WKT):
+<code>LINESTRING (30 10, 10 30, 40 40)</code><br />
 Common Data Language (CDL):</p>
 <pre><code>netcdf sample_linestring {
 dimensions:
@@ -364,7 +483,8 @@ data:
 </div>
 <div id="polygon-2d" class="section level2">
 <h2>Polygon (2D)</h2>
-<p>Well Known Text (WKT): <code>POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))</code><br />
+<p>Well Known Text (WKT):
+<code>POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))</code><br />
 Common Data Language (CDL):</p>
 <pre><code>netcdf sample_polygon {
 dimensions:
@@ -408,7 +528,8 @@ data:
 </div>
 <div id="multilinestring-2d" class="section level2">
 <h2>MultiLineString (2D)</h2>
-<p>Well Known Text (WKT): <code>MULTILINESTRING ((10 10, 20 20, 10 40), (40 40, 30 30, 40 20, 30 10))</code><br />
+<p>Well Known Text (WKT):
+<code>MULTILINESTRING ((10 10, 20 20, 10 40), (40 40, 30 30, 40 20, 30 10))</code><br />
 Common Data Language (CDL):</p>
 <pre><code>netcdf sample_multilinestring {
 dimensions:
@@ -458,7 +579,8 @@ data:
 </div>
 <div id="multipolygon-2d" class="section level2">
 <h2>MultiPolygon (2D)</h2>
-<p>Well Known Text (WKT): <code>MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))</code><br />
+<p>Well Known Text (WKT):
+<code>MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))</code><br />
 Common Data Language (CDL):</p>
 <pre><code>netcdf sample_multipolygon {
 dimensions:
@@ -513,7 +635,8 @@ data:
 </div>
 <div id="polygon-with-one-interior-ring-2d" class="section level2">
 <h2>Polygon with One Interior Ring (2D)</h2>
-<p>Well Known Text (WKT): <code>POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))</code><br />
+<p>Well Known Text (WKT):
+<code>POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))</code><br />
 Common Data Language (CDL):</p>
 <pre><code>netcdf sample_polygon_hole {
 dimensions:
@@ -568,7 +691,8 @@ data:
 </div>
 <div id="multipolygon-with-one-interior-ring-2d" class="section level2">
 <h2>MultiPolygon with One Interior Ring (2D)</h2>
-<p>Well Known Text (WKT): <code>MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)), ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20)))</code><br />
+<p>Well Known Text (WKT):
+<code>MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)), ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20)))</code><br />
 Common Data Language (CDL):</p>
 <pre><code>netcdf sample_multipolygon_hole {
 dimensions:
@@ -623,7 +747,8 @@ data:
 </div>
 <div id="multiple-multipolygons-with-interior-rings-2d" class="section level2">
 <h2>Multiple MultiPolygons with Interior Rings (2D)</h2>
-<p>Well Known Text (WKT): <code>MULTIPOLYGON(((0 0, 20 0, 20 20, 0 20, 0 0), (1 1, 10 5, 19 1, 1 1), (5 15, 7 19, 9 15, 5 15), (11 15, 13 19, 15 15, 11 15)), ((5 25, 9 25, 7 29, 5 25)), ((11 25, 15 25, 13 29, 11 25)))</code><br />
+<p>Well Known Text (WKT):
+<code>MULTIPOLYGON(((0 0, 20 0, 20 20, 0 20, 0 0), (1 1, 10 5, 19 1, 1 1), (5 15, 7 19, 9 15, 5 15), (11 15, 13 19, 15 15, 11 15)), ((5 25, 9 25, 7 29, 5 25)), ((11 25, 15 25, 13 29, 11 25)))</code><br />
 Common Data Language (CDL):</p>
 <pre><code>netcdf sample_multipolygons_holes {
 dimensions:
