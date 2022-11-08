@@ -1,4 +1,4 @@
-a30f8139e2a1e889538f5be43dd6d7b7 *DESCRIPTION
+975db24cdffe3ba45f5c15edb28a8f93 *DESCRIPTION
 c46267426930be3823092e5d94165ab3 *NAMESPACE
 a4400771a4becb03ca727a2905674e07 *NEWS.md
 71f44a5dac631435d74db5f6a06ee54f *R/0_ncdfgeom.R
@@ -13,17 +13,17 @@ c9ba97b6e64ee7eb10bb6a5872987900 *R/read_attribute_data.R
 07fbff70ce9623d44f21656c3df8c9db *R/write_point_dsg.R
 016718217f95432e2c08e264c6a5f9eb *R/write_timeseries_dsg.R
 45ad358cd6e3ea8e1f864ee787b21272 *README.md
-1d151095034a00b60c6614e9b06db09b *build/vignette.rds
+e4671f79a9e184e7571d67ddc333957e *build/vignette.rds
 cb2e214096cb29579fc3a4e0a58f1382 *inst/CITATION
 9f4c937d9643c6c9454297f43cdc0895 *inst/doc/geometry.R
 4b72380fcc6a3b5d927ececb42c0d676 *inst/doc/geometry.Rmd
-d2d874c39f71565cce9c54a71e04bc14 *inst/doc/geometry.html
+f2dab2662ebb65488e8610e13cb7cd7e *inst/doc/geometry.html
 6d6f3f7badad0d5f7151e0c840686dff *inst/doc/ncdfgeom.R
 6a4c30612290e88dec674d8a96bd2585 *inst/doc/ncdfgeom.Rmd
-d12791af8f7cfc521de628279f5f34d9 *inst/doc/ncdfgeom.html
+ad572dbe57c9e2e18d5d44873b7b3883 *inst/doc/ncdfgeom.html
 10be0711fb8a2058282f77f95a039aa3 *inst/doc/timeseries.R
 be0f1e01057f5db6c5d813aa85aa457d *inst/doc/timeseries.Rmd
-1e4efba2c022c5130c1683629ebd7c11 *inst/doc/timeseries.html
+d6a3b4c73fddeb764457d81b6f07a361 *inst/doc/timeseries.html
 4bf5a923aeac7a663dd807ba10c76054 *inst/extdata/Yahara_alb.zip
 8825294de302acb97c043683b8da89cc *inst/extdata/climdiv-pcpndv.rds
 2485a70a15a3af1cf50456fc51d1f29e *inst/extdata/climdiv.gpkg
@@ -70,7 +70,7 @@ a53b2cceff5fa25d4a7091961dba4458 *tests/testthat/data/soilmoisturetools/ok_meta_
 94dca241bc7201a6640fe7eb8d870b9b *tests/testthat/helper-functions.R
 729c8a0ed5df6719930a6ec78fd45851 *tests/testthat/test_area_weighted.R
 35b6797bd2ccc7f1edd4ed5bb72d82d0 *tests/testthat/test_check_ncdf.R
-5348a92895ba57fb0499bba6aabf63eb *tests/testthat/test_create_cell_geometry.R
+0d67942b98a2300adcddf0a330f69426 *tests/testthat/test_create_cell_geometry.R
 0e737e330a28489be5b16b989974e690 *tests/testthat/test_geom_examples.R
 9af05e02812f49fcd4c71cf86a8764ba *tests/testthat/test_line.R
 1bc4f49a560097f6b9b14f387bd6ee66 *tests/testthat/test_point.R
@@ -78,9 +78,5 @@ ff94e4c892cfed9163a63c37f6ee7aff *tests/testthat/test_poly.R
 76a60fd90852936aa8c896a7e05abf35 *tests/testthat/test_read-write_attribute_data.R
 f23bbe9bfad870f43874c242f1c55160 *tests/testthat/test_read-write_timeseries_dsg.R
 4b72380fcc6a3b5d927ececb42c0d676 *vignettes/geometry.Rmd
-d41d8cd98f00b204e9800998ecf8427e *vignettes/geometry_cache/html/__packages
-a4eac5342564903bc6bbd0230977e691 *vignettes/geometry_cache/html/dump_polygons_c9283800ff2a56731fcfeeee1b8a4067.RData
-d41d8cd98f00b204e9800998ecf8427e *vignettes/geometry_cache/html/dump_polygons_c9283800ff2a56731fcfeeee1b8a4067.rdb
-7cd3beffcd3ce54734c78172c88982a9 *vignettes/geometry_cache/html/dump_polygons_c9283800ff2a56731fcfeeee1b8a4067.rdx
 6a4c30612290e88dec674d8a96bd2585 *vignettes/ncdfgeom.Rmd
 be0f1e01057f5db6c5d813aa85aa457d *vignettes/timeseries.Rmd
