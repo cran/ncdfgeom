@@ -14,7 +14,7 @@ library(ncdfgeom)
 
 ## ----data_shape_2-------------------------------------------------------------
 prcp_data <- readRDS(system.file("extdata/climdiv-pcpndv.rds", package = "ncdfgeom"))
-print(prcp_data, n_extra = 0)
+print(prcp_data, max_extra_cols = 0)
 plot(prcp_data$date, prcp_data$`0101`, col = "red", 
      xlab = "date", ylab = "monthly precip (inches)", main = "Sample Timeseries for 0101-'Northern Valley'")
 lines(prcp_data$date, prcp_data$`0101`)

@@ -388,9 +388,10 @@ polygon data to the NetCDF file.</p>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                         <span class="at">instance_dim_name =</span> <span class="st">&quot;station&quot;</span>, </span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                         <span class="at">variables =</span> vars<span class="sc">$</span>name) <span class="ot">-&gt;</span> example_file</span></code></pre></div>
 <p>Now the NetCDF file looks like:</p>
-<pre><code>#&gt; Warning in system(paste(&quot;ncdump -h&quot;, example_file),
-#&gt; intern = TRUE): running command &#39;ncdump -h C:
-#&gt; \Users\DBLODG~2\AppData\Local\Temp\1\Rtmpu86yqQ\file78c46b9774ec&#39; had status 1</code></pre>
+<pre><code>#&gt; Warning in system(paste(&quot;ncdump -h&quot;, example_file), intern = TRUE): running
+#&gt; command &#39;ncdump -h
+#&gt; C:\Users\DBLODG~2\AppData\Local\Temp\1\RtmpKaYdKC\file7b1446d155fe&#39; had status
+#&gt; 1</code></pre>
 <p>Read the polygon data from the file and write it out to a
 geopackage.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>polygons_sf <span class="ot">&lt;-</span> ncdfgeom<span class="sc">::</span><span class="fu">read_geometry</span>(example_file)</span>
