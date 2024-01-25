@@ -16,9 +16,12 @@ lons <- as.numeric(attributes$XCOORD)
 alts <- rep(1,length(lats)) # Making up altitude for the sake of demonstration.
 
 ## ----timeseries---------------------------------------------------------------
-timeseries_file <- system.file('extdata/yahara_alb_gdp_file.csv', package = "ncdfgeom")
 
-raw_data <- geoknife::parseTimeseries(timeseries_file, delim=',', with.units=TRUE)
+# can use geoknife from github
+# timeseries_file <- system.file('extdata/yahara_alb_gdp_file.csv', package = "ncdfgeom")
+# raw_data <- geoknife::parseTimeseries(timeseries_file, delim=',', with.units=TRUE)
+
+raw_data <- readRDS(system.file('extdata/yahara_alb_gdp_file.rds', package = "ncdfgeom"))
 
 timeseries_data <- raw_data[2:(ncol(raw_data) - 3)]
 

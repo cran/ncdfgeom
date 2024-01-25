@@ -2,6 +2,7 @@
 context("polygon")
 
 test_that("data for basic polygon", {
+  testthat::skip_if_not(require("ncdf4"))
   polygonData <- get_fixture_data("polygon")
   nc_file <- write_geometry(nc_file=tempfile(), geom_data = polygonData)
   nc<-nc_open(nc_file)
@@ -42,6 +43,7 @@ test_that("data for basic polygon", {
 })
 
 test_that("polygon with a hole.", {
+  testthat::skip_if_not(require("ncdf4"))
   polygonData <- get_fixture_data("polygon_hole")
   nc_file <- write_geometry(nc_file=tempfile(), geom_data = polygonData)
   nc<-nc_open(nc_file)
@@ -69,6 +71,7 @@ test_that("polygon with a hole.", {
 })
 
 test_that("multipolygon.", {
+  testthat::skip_if_not(require("ncdf4"))
   polygonData <- get_fixture_data("multipolygon")
   nc_file <- write_geometry(nc_file=tempfile(), geom_data = polygonData)
   nc<-nc_open(nc_file)
@@ -86,6 +89,7 @@ test_that("multipolygon.", {
 })
 
 test_that("multipolygon with a hole.", {
+  testthat::skip_if_not(require("ncdf4"))
   polygonData <-get_fixture_data("multipolygon_hole")
   nc_file <- write_geometry(nc_file=tempfile(), geom_data = polygonData)
   nc<-nc_open(nc_file)
@@ -118,6 +122,7 @@ test_that("multipolygon with a hole.", {
 })
 
 test_that("multipolygons with holes.", {
+  testthat::skip_if_not(require("ncdf4"))
   polygonData <- get_fixture_data("multipolygons_holes")
   nc_file <- write_geometry(nc_file=tempfile(), geom_data = polygonData)
   nc<-nc_open(nc_file)
@@ -141,6 +146,7 @@ test_that("multipolygons with holes.", {
 })
 
 test_that("A whole shapefile can be written", {
+  testthat::skip_if_not(require("ncdf4"))
   polygonData <- read_sf("data/Yahara_alb/Yahara_River_HRUs_alb_eq.shp", check_ring_dir = TRUE)
   nc_file <- write_geometry(nc_file=tempfile(), geom_data = polygonData)
   nc<-nc_open(nc_file)
@@ -236,12 +242,11 @@ test_that("big roundtrip", {
                                  overwrite = TRUE)
   
   sf::st_geometry(climdiv_poly)[[1]] <- sf::st_cast(sf::st_geometry(climdiv_poly)[[1]], "POLYGON")
-  climdiv_poly <- sf::st_cast(climdiv_poly, "GEOMETRY")
   
   expect_error(write_geometry(out_nc, climdiv_poly, variables = "climdiv_prcp_inches"),
                "Found multiple geometry types, only one is supported.")
   
-  climdiv_poly <- st_sf(st_cast(climdiv_poly, "MULTIPOLYGON"))
+  sf::st_geometry(climdiv_poly)[[1]] <- sf::st_cast(sf::st_geometry(climdiv_poly)[[1]], "MULTIPOLYGON")
   
   expect_warning(out_nc <- write_geometry(out_nc, climdiv_poly, variables = "climdiv_prcp_inches"),
                  "no datum information found assuming WGS84")
